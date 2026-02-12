@@ -130,6 +130,7 @@ export class QmdMemoryManager implements MemorySearchManager {
       XDG_CONFIG_HOME: this.xdgConfigHome,
       XDG_CACHE_HOME: this.xdgCacheHome,
       NO_COLOR: "1",
+      QMD_GPU: process.env.QMD_GPU ?? "auto",
     };
     this.sessionExporter = this.qmd.sessions.enabled
       ? {
