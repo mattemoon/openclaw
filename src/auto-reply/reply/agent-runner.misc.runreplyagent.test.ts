@@ -159,6 +159,7 @@ describe("runReplyAgent onAgentRunStart", () => {
       resolvedBlockStreamingBreak: "message_end",
       shouldInjectGroupIntro: false,
       typingMode: "instant",
+      workspaceDir: "/tmp",
     });
   }
 
