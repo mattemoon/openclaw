@@ -172,6 +172,28 @@ function selectWinner(candidates: CandidateResponse[], votes: VoteResult[]): Can
 
 Intercept before normal completion, check if ensemble mode active, run ensemble flow, return winner as if it were the normal response.
 
+## Generator Diversity (TBD)
+
+Possible axes for varying generators:
+
+- **Model**: Opus vs Sonnet vs Haiku (different capabilities/styles)
+- **Thinking/effort level**: off, minimal, low, medium, high (Anthropic API)
+- **Temperature**: 0.0–1.0 range (narrower than OpenAI's 0–2)
+
+OpenClaw defaults to `low` thinking for reasoning-capable models, `off` otherwise.
+
+Not yet decided whether to vary these, or which combination produces the best candidate diversity. Needs experimentation.
+
+## Voting Approach (Preferred)
+
+**6 Sonnet evals with all orderings:**
+
+With 3 candidates, there are 6 possible orderings (3! = 6). Run 6 Sonnet voting calls, each seeing the same three responses but in a different order. This controls for position bias — models tend to favor responses in certain positions (often first or last). By averaging across all orderings, you neutralize that.
+
+**Cost:** The 6 voting calls share the same prefix (conversation + all three candidate responses), so prompt caching should kick in hard after the first one. You pay full input price once, then ~90% off for the other 5. At Sonnet prices, 6 calls is still cheaper than 1 Opus call for moderate-length contexts.
+
+**Aggregation:** Each of 6 voters picks a winner. Tally votes. With 6 voters and 3 candidates, ties are less likely than with 3 voters. Any winner has to overcome position bias, not benefit from it.
+
 ## Open Questions
 
 1. **Is this actually useful?** Need to test whether ensemble produces noticeably better responses or just burns tokens.
